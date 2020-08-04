@@ -2,9 +2,10 @@
 
 module Main where
 
-import Controllers.Item (ItemDBTuple, getAllItems)
+import Data.Maybe
 import Data.Monoid (mconcat)
 import Database.Conn (getConn)
+import Database.Item
 import Database.SQLite.Simple (Connection)
 import Lucid.Base
 import Lucid.Html5
@@ -24,12 +25,19 @@ app conn = do
 homePage :: Connection -> ActionM ()
 homePage conn = do
   items <- liftAndCatchIO $ getAllItems conn
-  html $ mconcat ["<h1>Hello world!</h1>"]
+  html $ renderText $ homePageView items
 
-homePageView :: Html ()
-homePageView = html_ $ do
+homePageView :: [ItemData] -> Html ()
+homePageView items = html_ $ do
   head_ $ do
     title_ "Heed"
   body_ $ do
     div_ $ do
       p_ "Hello world"
+      ul_ $
+        mapM_
+          ( \item -> do
+              li_ $ do
+                with a_ [href_ $ item_url item] $ toHtml $ name item
+          )
+          items
