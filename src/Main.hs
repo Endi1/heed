@@ -1,13 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Main where
 
+import Controllers.Feed
 import Data.Maybe
 import Data.Monoid (mconcat)
+import Data.Text
 import Database.Conn (getConn)
+import Database.Feed
 import Database.Item
 import Database.SQLite.Simple (Connection)
 import Lucid.Base
+import Text.Feed.Query
 import Lucid.Html5
 import Web.Scotty
 
@@ -18,12 +23,22 @@ main = do
 
 app :: Connection -> ScottyM ()
 app conn = do
-  get "/" (homePage conn)
-  get "/foo" $ do
-    html "foo"
+  get "/" (homePageAction conn)
+  post "/new-feed" $ newFeedAction conn
 
-homePage :: Connection -> ActionM ()
-homePage conn = do
+newFeedAction :: Connection -> ActionM ()
+newFeedAction conn = do
+  feed_url :: Text <- param "feed_url"
+  maybeFeed <- liftAndCatchIO $ readRemoteFeed feed_url
+  case maybeFeed of
+    Nothing -> raise "Not a valid atom/rss feed"
+    Just feed -> do
+      feedId <- liftAndCatchIO $ insertNewFeed conn (getFeedTitle feed) feed_url
+      liftAndCatchIO $ refreshFeedItems conn $ toInteger feedId
+      redirect "/"
+
+homePageAction :: Connection -> ActionM ()
+homePageAction conn = do
   items <- liftAndCatchIO $ getAllItems conn
   html $ renderText $ homePageView items
 
