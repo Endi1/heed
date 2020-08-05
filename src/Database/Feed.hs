@@ -22,7 +22,12 @@ instance FromRow FeedData where
 insertNewFeed :: Connection -> Text -> Text -> IO Int64
 insertNewFeed conn title url = do
   execute conn "INSERT OR IGNORE INTO feeds (title, feed_url) VALUES (?, ?)" (title, url)
-  lastInsertRowId conn
+  rowId <- lastInsertRowId conn
+  case rowId of
+    0 -> do
+      (x : xs) <- query conn "SELECT id FROM feeds WHERE feed_url = ?" (Only url) :: IO [Only Int64]
+      return $ fromOnly x
+    _ -> return rowId
 
 getAllFeeds :: Connection -> IO [FeedData]
 getAllFeeds conn = query_ conn "SELECT * FROM feeds" :: IO [FeedData]
