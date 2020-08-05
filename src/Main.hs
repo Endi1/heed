@@ -24,10 +24,24 @@ main = do
 app :: Connection -> ScottyM ()
 app conn = do
   get "/" (homePageAction conn)
-  post "/new-feed" $ newFeedAction conn
+  get "/new-feed" newFeedGetAction
+  post "/new-feed" $ newFeedPostAction conn
 
-newFeedAction :: Connection -> ActionM ()
-newFeedAction conn = do
+newFeedGetAction :: ActionM ()
+newFeedGetAction = html $ renderText newFeedView
+
+newFeedView :: Html ()
+newFeedView = html_ $ do
+  head_ $ do
+    title_ "Heed - Add New Feed"
+  body_ $ do
+    div_ $ do
+      form_ [action_ "/new-feed", method_ "post"] $ do
+        input_ [type_ "text", name_ "feed_url"]
+        input_ [type_ "submit", value_ "Add new feed"]
+
+newFeedPostAction :: Connection -> ActionM ()
+newFeedPostAction conn = do
   feed_url :: Text <- param "feed_url"
   maybeFeed <- liftAndCatchIO $ readRemoteFeed feed_url
   case maybeFeed of
