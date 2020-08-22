@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Views.NewFeed where
+module Views.NewFeed (newFeedView) where
 
 import Lucid.Base
 import Lucid.Html5
