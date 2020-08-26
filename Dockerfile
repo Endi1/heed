@@ -20,10 +20,10 @@ ADD sql ./sql
 
 RUN stack install
 
+VOLUME /db
 
 RUN sqlite3 /db/heed.db ".read sql/feeds.sql"
 RUN sqlite3 /db/heed.db ".read sql/items.sql"
 
-VOLUME /db
 
 CMD ["heed"]
