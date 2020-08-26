@@ -26,7 +26,7 @@ main = do
 
 app :: Connection -> ScottyM ()
 app conn = do
-  middleware $ staticPolicy (noDots >-> addBase "/home/endi/heed/src/static")
+  middleware $ staticPolicy (noDots >-> addBase "/app/src/static")
   get "/" (homePageGetAction conn)
   get "/new-feed" newFeedGetAction
   post "/new-feed" $ newFeedPostAction conn

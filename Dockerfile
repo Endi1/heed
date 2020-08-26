@@ -2,6 +2,9 @@ FROM haskell:8
 
 WORKDIR /app
 
+RUN apt update
+RUN apt install sqlite3
+
 RUN stack setup
 
 COPY heed.cabal .
@@ -16,5 +19,11 @@ ADD src ./src
 ADD sql ./sql
 
 RUN stack install
+
+
+RUN sqlite3 /db/heed.db ".read sql/feeds.sql"
+RUN sqlite3 /db/heed.db ".read sql/items.sql"
+
+VOLUME /db
 
 CMD ["heed"]
