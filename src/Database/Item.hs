@@ -1,14 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Database.Item (ItemData (..), refreshFeedItems, getAllItems) where
+module Database.Item (ItemData (..), refreshFeedItems, getAllItems, markItemAsRead) where
 
 import Controllers.Item (readRemoteFeedItems)
 import Data.Text
 import Database.Feed
 import Database.SQLite.Simple
 import GHC.List
-import Text.Feed.Types
 import Text.Feed.Query
+import Text.Feed.Types
 
 data ItemData = ItemData
   { id :: Integer,
@@ -39,3 +39,7 @@ refreshFeedItems conn feedId = do
   where
     tuplefyItem :: Item -> Integer -> InsertableItem
     tuplefyItem item feedId = (getItemTitle item, getItemLink item, getItemPublishDateString item, getItemAuthor item, feedId, getItemSummary item, getItemDescription item)
+
+markItemAsRead :: Connection -> Integer -> IO ()
+markItemAsRead conn item_id = do
+  execute conn "UPDATE items SET is_read=1 WHERE id=?" [item_id]

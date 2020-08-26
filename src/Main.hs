@@ -4,6 +4,7 @@
 module Main where
 
 import Actions.HomePage
+import Actions.MarkRead
 import Actions.NewFeed
 import Controllers.Feed
 import Data.Maybe
@@ -27,7 +28,8 @@ main = do
 
 app :: Connection -> ScottyM ()
 app conn = do
-  middleware $ staticPolicy (noDots >-> addBase "/app/src/static" >-> addBase "/home/endi/heed/src/static")
+  middleware $ staticPolicy (noDots >-> addBase "/app/src/static")
   get "/" (homePageGetAction conn)
   get "/new-feed" newFeedGetAction
   post "/new-feed" $ newFeedPostAction conn
+  post "/mark-read" $ markReadPostAction conn
