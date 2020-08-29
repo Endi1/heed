@@ -35,7 +35,9 @@ body {
 }
 
 .item {
-  height: 2.3em;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5em;
 }
 
 .item a {
@@ -45,6 +47,16 @@ body {
 
 .item a:hover {
   color: #616161;
+}
+
+.item .item-date {
+  font-size: 0.7em;
+  color: gray;
+}
+
+.item .item-feed {
+  font-size: 0.7em;
+  margin-left: 1em;
 }
 
 .item.is-read a {

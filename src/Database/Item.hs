@@ -1,11 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 
-module Database.Item (ItemData (..), refreshFeedItems, getAllItems, markItemAsRead) where
+module Database.Item (ItemData (..), refreshFeedItems, getAllItems, markItemAsRead, getItems) where
 
 import Controllers.Item (readRemoteFeedItems)
 import Data.Text
 import Database.Feed
 import Database.SQLite.Simple
+import Database.SQLite.Simple.QQ
 import GHC.List
 import Text.Feed.Query
 import Text.Feed.Types
@@ -19,17 +21,57 @@ data ItemData = ItemData
     feed_id :: Integer,
     summary :: Maybe Text,
     description :: Maybe Text,
-    is_read :: Bool
+    is_read :: Bool,
+    feed_title :: Text
   }
   deriving (Show)
 
 type InsertableItem = (Maybe Text, Maybe Text, Maybe Text, Maybe Text, Integer, Maybe Text, Maybe Text)
 
 instance FromRow ItemData where
-  fromRow = ItemData <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
+  fromRow = ItemData <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
+
+getItems :: Connection -> Maybe Integer -> IO [ItemData]
+getItems conn Nothing = getAllItems conn
+getItems conn (Just f_id) = getItemsForFeed conn f_id
+
+getItemsForFeed :: Connection -> Integer -> IO [ItemData]
+getItemsForFeed conn f_id =
+  query
+    conn
+    [sql|
+      SELECT 
+        items.id, 
+        items.name, 
+        items.item_url, 
+        items.date_published, 
+        items.author, 
+        items.feed_id, 
+        items.summary, 
+        items.description, 
+        items.is_read, 
+        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id WHERE items.feed_id=?
+|]
+    (Only f_id)
 
 getAllItems :: Connection -> IO [ItemData]
-getAllItems conn = query_ conn "SELECT * FROM items ORDER BY date_published ASC" :: IO [ItemData]
+getAllItems conn =
+  query_
+    conn
+    [sql|
+      SELECT 
+        items.id, 
+        items.name, 
+        items.item_url, 
+        items.date_published, 
+        items.author, 
+        items.feed_id, 
+        items.summary, 
+        items.description, 
+        items.is_read, 
+        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id
+|] ::
+    IO [ItemData]
 
 refreshFeedItems :: Connection -> Integer -> IO ()
 refreshFeedItems conn feedId = do

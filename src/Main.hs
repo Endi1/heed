@@ -3,6 +3,7 @@
 
 module Main where
 
+import Actions.FeedList
 import Actions.HomePage
 import Actions.MarkRead
 import Actions.NewFeed
@@ -31,6 +32,7 @@ app conn = do
   middleware $ staticPolicy (noDots >-> addBase "/app/src/static")
   get "/" (homePageGetAction conn)
   get "/new-feed" newFeedGetAction
+  get "/feed/:feed_id" $ feedListGetAction conn
   post "/new-feed" $ newFeedPostAction conn
   post "/mark-read" $ markReadPostAction conn
   post "/refresh-feeds" $ refreshFeedsPostAction conn
