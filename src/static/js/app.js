@@ -8,3 +8,15 @@ let markAsRead = (itemId) => {
   xhr.open("POST", `http://${domain}:${port}/mark-read`, true);
   xhr.send(formData);
 };
+
+let refreshFeeds = () => {
+  let xhr = new XMLHttpRequest();
+  const domain = window.location.hostname;
+  const port = location.port;
+
+  xhr.open("POST", `http://${domain}:${port}/refresh-feeds`, true);
+  xhr.send();
+  xhr.onload = () => {
+    window.location.reload();
+  };
+};

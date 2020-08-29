@@ -12,6 +12,7 @@ homePageView :: [ItemData] -> Html ()
 homePageView items = html_ $ do
   head_ $ do
     title_ "Heed"
+    link_ [href_ "https://fonts.googleapis.com/css2?family=Roboto&display=swap", rel_ "stylesheet"]
     link_ [rel_ "stylesheet", type_ "text/css", href_ "css/style.css"]
     script_ ([src_ "js/app.js"] :: [Attribute]) ("" :: String)
   body_ $ do

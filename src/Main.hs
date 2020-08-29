@@ -33,3 +33,4 @@ app conn = do
   get "/new-feed" newFeedGetAction
   post "/new-feed" $ newFeedPostAction conn
   post "/mark-read" $ markReadPostAction conn
+  post "/refresh-feeds" $ refreshFeedsPostAction conn
