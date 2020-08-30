@@ -50,7 +50,7 @@ getItemsForFeed conn f_id =
         items.summary, 
         items.description, 
         items.is_read, 
-        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id WHERE items.feed_id=?
+        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id WHERE items.feed_id=? ORDER BY items.date_published DESC
 |]
     (Only f_id)
 
@@ -69,7 +69,7 @@ getAllItems conn =
         items.summary, 
         items.description, 
         items.is_read, 
-        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id
+        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id ORDER BY items.date_published DESC
 |] ::
     IO [ItemData]
 

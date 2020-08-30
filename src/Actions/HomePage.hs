@@ -12,7 +12,8 @@ import Web.Scotty
 homePageGetAction :: Connection -> ActionM ()
 homePageGetAction conn = do
   items <- liftAndCatchIO $ getAllItems conn
-  html $ renderText $ itemListGetView items
+  feeds <- liftAndCatchIO $ getAllFeeds conn
+  html $ renderText $ itemListGetView feeds items
 
 refreshFeedsPostAction :: Connection -> ActionM ()
 refreshFeedsPostAction conn = do

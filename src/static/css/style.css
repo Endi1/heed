@@ -5,7 +5,7 @@ body {
 }
 
 .container {
-  margin-left: 8em;
+  margin-left: 5em;
   margin-right: 9em;
 }
 
@@ -30,23 +30,41 @@ body {
   cursor: pointer;
 }
 
+.main {
+  display: flex;
+  margin-top: 2em;
+}
+
+.main a {
+  text-decoration: none;
+  color: #2e2e2e;
+}
+
+.main a:hover {
+  color: #616161;
+}
+
+.sidebar {
+  font-size: 0.8em;
+}
+
+.sidebar .feed-list {
+  width: 100%;
+}
+
+.feed {
+  margin-bottom: 0.2em;
+}
+
 .items {
   margin-top: 1em;
+  margin-left: 5em;
 }
 
 .item {
   display: flex;
   flex-direction: column;
   margin-bottom: 0.5em;
-}
-
-.item a {
-  text-decoration: none;
-  color: #2e2e2e;
-}
-
-.item a:hover {
-  color: #616161;
 }
 
 .item .item-date {

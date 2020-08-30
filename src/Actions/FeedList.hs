@@ -4,6 +4,7 @@
 module Actions.FeedList (feedListGetAction) where
 
 import Data.Text
+import Database.Feed
 import Database.Item
 import Database.SQLite.Simple
 import Lucid.Base (renderText)
@@ -15,4 +16,5 @@ feedListGetAction :: Connection -> ActionM ()
 feedListGetAction conn = do
   f_id <- param "feed_id"
   items <- liftAndCatchIO $ getItems conn (Just f_id)
-  html $ renderText $ itemListGetView items
+  feeds <- liftAndCatchIO $ getAllFeeds conn
+  html $ renderText $ itemListGetView feeds items
