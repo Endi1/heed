@@ -2,6 +2,7 @@
 
 module Actions.HomePage (homePageGetAction, refreshFeedsPostAction) where
 
+import Data.Void
 import Database.Feed
 import Database.Item
 import Database.SQLite.Simple
@@ -13,7 +14,9 @@ homePageGetAction :: Connection -> ActionM ()
 homePageGetAction conn = do
   items <- liftAndCatchIO $ getAllItems conn
   feeds <- liftAndCatchIO $ getAllFeeds conn
-  html $ renderText $ itemListGetView feeds items
+  page <- rescue (param "page") (\t -> return 1)
+  let currentItemsInPagination = drop (5 * (page - 1)) $ take (5 * page) items
+  html $ renderText $ itemListGetView feeds currentItemsInPagination
 
 refreshFeedsPostAction :: Connection -> ActionM ()
 refreshFeedsPostAction conn = do
