@@ -2,21 +2,25 @@
 
 module Actions.HomePage (homePageGetAction, refreshFeedsPostAction) where
 
-import Data.Void
-import Database.Feed
-import Database.Item
-import Database.SQLite.Simple
+import Actions.Types (Pagination (..))
+import Actions.Utils (paginateItems)
+import Database.Feed (FeedData (id), getAllFeeds)
+import Database.Item (ItemData, getAllItems, refreshFeedItems)
+import Database.SQLite.Simple (Connection)
 import Lucid.Base (renderText)
 import Views.ItemList (itemListGetView)
-import Web.Scotty
+import Web.Scotty (ActionM, html, liftAndCatchIO, param, rescue)
 
 homePageGetAction :: Connection -> ActionM ()
 homePageGetAction conn = do
   items <- liftAndCatchIO $ getAllItems conn
   feeds <- liftAndCatchIO $ getAllFeeds conn
   page <- rescue (param "page") (\t -> return 1)
-  let currentItemsInPagination = drop (5 * (page - 1)) $ take (5 * page) items
-  html $ renderText $ itemListGetView feeds currentItemsInPagination
+  html $
+    renderText $
+      itemListGetView
+        feeds
+        (paginateItems items page)
 
 refreshFeedsPostAction :: Connection -> ActionM ()
 refreshFeedsPostAction conn = do
