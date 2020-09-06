@@ -45,9 +45,9 @@ itemListGetView feeds pagination = html_ $ do
         case previousPaginationItems pagination of
           [] -> span_ [class_ "previous"] ""
           (x : xs) -> span_ [class_ "previous"] $ do
-            with a_ [href_ $ pack $ "?page=" ++ show (currentPageCount pagination - 1)] "<"
+            with a_ [href_ $ pack $ "?page=" ++ show (currentPageCount pagination - 1)] "« Previous"
 
         case nextPaginationItems pagination of
           [] -> span_ [class_ "next"] ""
           (x : xs) -> span_ [class_ "next"] $ do
-            with a_ [href_ $ pack $ "?page=" ++ show (currentPageCount pagination + 1)] ">"
+            with a_ [href_ $ pack $ "?page=" ++ show (currentPageCount pagination + 1)] "Next »"

@@ -13,6 +13,6 @@ paginateItems items page =
     }
   where
     itemsInPaginationCount :: Int
-    itemsInPaginationCount = 5
+    itemsInPaginationCount = 20
     getPaginationItems :: Int -> [ItemData] -> [ItemData]
     getPaginationItems pageCount items = drop (itemsInPaginationCount * (pageCount - 1)) $ take (itemsInPaginationCount * pageCount) items
