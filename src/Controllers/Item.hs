@@ -1,5 +1,5 @@
-{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Controllers.Item (readRemoteFeedItems) where
@@ -7,14 +7,11 @@ module Controllers.Item (readRemoteFeedItems) where
 import Controllers.RequestHelpers (buildUrl, makeRequestToFeed)
 import Data.ByteString.Lazy (fromStrict)
 import Data.Foldable (forM_)
-import Data.Int
 import Data.Maybe (fromJust)
-import Data.Text
-import Database.SQLite.Simple
+import Data.Text (Text)
 import GHC.List (concat)
-import Network.HTTP.Req
 import Text.Feed.Import (parseFeedSource)
-import Text.Feed.Query
+import Text.Feed.Query (getFeedItems)
 import qualified Text.Feed.Types as T (Feed, Item)
 
 readRemoteFeedItems :: Text -> IO [T.Item]

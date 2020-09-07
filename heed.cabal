@@ -37,4 +37,5 @@ executable heed
                        modern-uri,
                        scotty,
                        lucid,
-                       wai-middleware-static
+                       wai-middleware-static,
+                       time

@@ -7,10 +7,18 @@ import Controllers.RequestHelpers (buildUrl, makeRequestToFeed)
 import Data.ByteString (ByteString)
 import Data.ByteString.Lazy (fromStrict)
 import Data.Foldable (forM_)
-import Data.Int
-import Data.Text
+import Data.Int (Int64)
+import Data.Text (Text)
 import Database.SQLite.Simple
-import Network.HTTP.Req
+  ( Connection,
+    FromRow (..),
+    Only (..),
+    execute,
+    field,
+    lastInsertRowId,
+    query,
+    query_,
+  )
 import Text.Feed.Import (parseFeedSource)
 import Text.Feed.Query (getFeedTitle)
 
