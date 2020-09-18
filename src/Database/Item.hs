@@ -1,16 +1,34 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
 
-module Database.Item (ItemData (..), refreshFeedItems, getAllItems, markItemAsRead, getItems) where
+module Database.Item (ItemData (..), refreshFeedItems, getAllItems, markItemAsRead, getItems, dateToUTC) where
 
 import Controllers.Item (readRemoteFeedItems)
-import Data.Text
-import Database.Feed
+import Data.Maybe (isNothing)
+import Data.Text (Text, pack, unpack)
+import Data.Time.Clock (UTCTime (..))
+import Data.Time.Format (defaultTimeLocale, parseTimeM)
+import Database.Feed (FeedData (feed_url), getFeed)
 import Database.SQLite.Simple
-import Database.SQLite.Simple.QQ
-import GHC.List
+  ( Connection,
+    FromRow (..),
+    Only (Only),
+    execute,
+    executeMany,
+    field,
+    query,
+    query_,
+  )
+import Database.SQLite.Simple.QQ (sql)
 import Text.Feed.Query
-import Text.Feed.Types
+  ( getItemAuthor,
+    getItemDescription,
+    getItemLink,
+    getItemPublishDateString,
+    getItemSummary,
+    getItemTitle,
+  )
+import Text.Feed.Types (Item)
 
 data ItemData = ItemData
   { id :: Integer,
@@ -49,8 +67,8 @@ getItemsForFeed conn f_id =
         items.feed_id, 
         items.summary, 
         items.description, 
-        items.is_read, 
-        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id WHERE items.feed_id=? ORDER BY items.date_published DESC
+        items.is_read,
+        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id WHERE items.feed_id=? AND items.deleted=0 ORDER BY items.date_published DESC
 |]
     (Only f_id)
 
@@ -68,8 +86,8 @@ getAllItems conn =
         items.feed_id, 
         items.summary, 
         items.description, 
-        items.is_read, 
-        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id ORDER BY items.date_published DESC
+        items.is_read,
+        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id WHERE items.deleted=0 ORDER BY items.date_published DESC
 |] ::
     IO [ItemData]
 
@@ -77,10 +95,25 @@ refreshFeedItems :: Connection -> Integer -> IO ()
 refreshFeedItems conn feedId = do
   (feed : feeds) <- getFeed conn feedId
   items <- readRemoteFeedItems $ feed_url feed
-  executeMany conn "INSERT OR IGNORE INTO items (name, item_url, date_published, author, feed_id, summary, description, is_read) VALUES (?, ?, ?, ?, ?, ?, ?, 0)" (Prelude.map ((\a -> a feedId) . tuplefyItem) items)
+  executeMany conn "INSERT OR IGNORE INTO items (name, item_url, date_published, author, feed_id, summary, description, is_read, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0)" (Prelude.map ((\a -> a feedId) . tuplefyItem) items)
   where
     tuplefyItem :: Item -> Integer -> InsertableItem
-    tuplefyItem item feedId = (getItemTitle item, getItemLink item, getItemPublishDateString item, getItemAuthor item, feedId, getItemSummary item, getItemDescription item)
+    tuplefyItem item feedId = (getItemTitle item, getItemLink item, textUTCTime $ dateToUTC $ getItemPublishDateString item, getItemAuthor item, feedId, getItemSummary item, getItemDescription item)
+
+    textUTCTime :: Maybe UTCTime -> Maybe Text
+    textUTCTime Nothing = Nothing
+    textUTCTime (Just utc) = Just (pack $ show utc)
+
+dateToUTC :: Maybe Text -> Maybe UTCTime
+dateToUTC Nothing = Nothing
+dateToUTC (Just datestring) =
+  let formats = ["%a, %d %b %Y %H:%M:%S %z", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%SZ"]
+      tries = map (\f -> parseTimeM False defaultTimeLocale f (unpack datestring)) formats :: [Maybe UTCTime]
+   in findJust tries
+  where
+    findJust :: [Maybe UTCTime] -> Maybe UTCTime
+    findJust [] = Nothing
+    findJust (x : xs) = if isNothing x then findJust xs else x
 
 markItemAsRead :: Connection -> Integer -> IO ()
 markItemAsRead conn item_id = do

@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS items (
     feed_id INTEGER NOT NULL,
     summary TEXT,
     description TEXT,
-    is_read INTEGER
+    is_read INTEGER,
+    deleted INTEGER
 )

@@ -5,7 +5,6 @@ WORKDIR /app
 RUN apt update
 RUN apt install sqlite3
 
-RUN stack setup
 
 COPY heed.cabal .
 COPY stack.yaml .
@@ -13,6 +12,7 @@ COPY Setup.hs .
 COPY LICENSE .
 COPY README.md .
 
+RUN stack setup
 RUN stack install --only-dependencies
 
 ADD src ./src
