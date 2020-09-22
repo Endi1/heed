@@ -7,17 +7,15 @@ import Data.Maybe (fromMaybe)
 import Data.Text (pack)
 import Database.Feed (FeedData (..))
 import Database.Item (ItemData (..))
-import Lucid.Base
+import Lucid.Base (Attribute, Html, ToHtml (toHtml), With (with))
 import Lucid.Html5
+import Views.Mixins.Head (pageHead)
 import Views.Mixins.TopBar (topBar)
 
 itemListGetView :: [FeedData] -> Pagination -> Html ()
 itemListGetView feeds pagination = html_ $ do
   head_ $ do
-    title_ "Heed"
-    link_ [href_ "https://fonts.googleapis.com/css2?family=Roboto&display=swap", rel_ "stylesheet"]
-    link_ [rel_ "stylesheet", type_ "text/css", href_ "/css/style.css"]
-    script_ ([src_ "/js/app.js"] :: [Attribute]) ("" :: String)
+    pageHead "Heed"
   body_ $ do
     div_ [class_ "container"] $ do
       topBar

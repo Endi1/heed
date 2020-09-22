@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Database.Feed (FeedData (..), insertNewFeed, getAllFeeds, getFeed) where
+module Database.Feed (FeedData (..), insertNewFeed, getAllFeeds, getFeed, deleteFeed) where
 
 import Controllers.RequestHelpers (buildUrl, makeRequestToFeed)
 import Data.ByteString (ByteString)
@@ -26,6 +26,11 @@ data FeedData = FeedData {id :: Integer, title :: Text, feed_url :: Text} derivi
 
 instance FromRow FeedData where
   fromRow = FeedData <$> field <*> field <*> field
+
+deleteFeed :: Connection -> Integer -> IO ()
+deleteFeed conn feedId = do
+  execute conn "DELETE FROM feeds WHERE id=?" (Only feedId)
+  execute conn "DELETE FROM items WHERE feed_id=?" (Only feedId)
 
 insertNewFeed :: Connection -> Text -> Text -> IO Int64
 insertNewFeed conn title url = do

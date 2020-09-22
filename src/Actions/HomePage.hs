@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Actions.HomePage (homePageGetAction, refreshFeedsPostAction) where
+module Actions.HomePage (homePageGetAction, refreshFeedsPostAction, deleteFeedPostAction) where
 
 import Actions.Types (Pagination (..))
 import Actions.Utils (paginateItems)
-import Database.Feed (FeedData (id), getAllFeeds)
+import Database.Feed (FeedData (id), deleteFeed, getAllFeeds)
 import Database.Item (ItemData, getAllItems, refreshFeedItems)
 import Database.SQLite.Simple (Connection)
 import Lucid.Base (renderText)
@@ -26,4 +26,10 @@ refreshFeedsPostAction :: Connection -> ActionM ()
 refreshFeedsPostAction conn = do
   feeds <- liftAndCatchIO $ getAllFeeds conn
   liftAndCatchIO $ mapM_ (refreshFeedItems conn . Database.Feed.id) feeds
+  html "Ok"
+
+deleteFeedPostAction :: Connection -> ActionM ()
+deleteFeedPostAction conn = do
+  feed_id <- param "feed_id"
+  liftAndCatchIO $ deleteFeed conn feed_id
   html "Ok"

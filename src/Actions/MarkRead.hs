@@ -3,15 +3,10 @@
 
 module Actions.MarkRead (markReadPostAction) where
 
-import Controllers.Feed
-import Data.Text
-import Database.Feed
 import Database.Item (markItemAsRead)
-import Database.SQLite.Simple
+import Database.SQLite.Simple (Connection)
 import Lucid.Base (renderText)
-import Text.Feed.Query
-import Views.NewFeed
-import Web.Scotty
+import Web.Scotty (ActionM, html, liftAndCatchIO, param)
 
 markReadPostAction :: Connection -> ActionM ()
 markReadPostAction conn = do

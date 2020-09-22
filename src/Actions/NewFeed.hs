@@ -1,17 +1,24 @@
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Actions.NewFeed (newFeedPostAction, newFeedGetAction) where
 
-import Controllers.Feed
-import Data.Text
-import Database.Feed
-import Database.Item
-import Database.SQLite.Simple
+import Controllers.Feed (readRemoteFeed)
+import Data.Text (Text)
+import Database.Feed (insertNewFeed)
+import Database.Item (refreshFeedItems)
+import Database.SQLite.Simple (Connection)
 import Lucid.Base (renderText)
-import Views.NewFeed
-import Text.Feed.Query
+import Text.Feed.Query (getFeedTitle)
+import Views.NewFeed (newFeedView)
 import Web.Scotty
+  ( ActionM,
+    html,
+    liftAndCatchIO,
+    param,
+    raise,
+    redirect,
+  )
 
 newFeedGetAction :: ActionM ()
 newFeedGetAction = html $ renderText newFeedView

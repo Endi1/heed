@@ -20,3 +20,14 @@ let refreshFeeds = () => {
     window.location.reload();
   };
 };
+
+let deleteFeed = (feedId) => {
+  let xhr = new XMLHttpRequest();
+  const domain = window.location.hostname;
+  const port = location.port;
+  let formData = new FormData();
+  formData.append("feed_id", feedId);
+
+  xhr.open("POST", `http://${domain}:${port}/delete-feed`, true);
+  xhr.send(formData);
+};

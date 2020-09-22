@@ -3,24 +3,25 @@
 
 module Main where
 
-import Actions.FeedList
+import Actions.FeedList (feedListGetAction)
 import Actions.HomePage
-import Actions.MarkRead
-import Actions.NewFeed
-import Controllers.Feed
-import Data.Maybe
+  ( deleteFeedPostAction,
+    homePageGetAction,
+    refreshFeedsPostAction,
+  )
+import Actions.MarkRead (markReadPostAction)
+import Actions.NewFeed (newFeedGetAction, newFeedPostAction)
+import Actions.Settings (settingsGetAction)
 import Data.Monoid (mconcat)
-import Data.Text
 import Database.Conn (getConn)
-import Database.Feed
-import Database.Item
 import Database.SQLite.Simple (Connection)
-import Lucid.Base
-import Lucid.Html5
 import Network.Wai.Middleware.Static
-import Settings
-import Text.Feed.Query
-import Web.Scotty
+  ( addBase,
+    noDots,
+    staticPolicy,
+    (>->),
+  )
+import Web.Scotty (ScottyM, get, middleware, post, scotty)
 
 main :: IO ()
 main = do
@@ -36,3 +37,5 @@ app conn = do
   post "/new-feed" $ newFeedPostAction conn
   post "/mark-read" $ markReadPostAction conn
   post "/refresh-feeds" $ refreshFeedsPostAction conn
+  post "/delete-feed" $ deleteFeedPostAction conn
+  get "/settings" $ settingsGetAction conn
