@@ -11,9 +11,18 @@ body {
 
 .top-bar {
   display: flex;
-  flex-direction: row-reverse;
+  /* flex-direction: row-reverse; */
+  justify-content: space-between;
   height: 2.5em;
   align-items: center;
+}
+
+.top-bar a {
+  text-decoration: none;
+}
+
+.top-bar h3 a {
+  color: black;
 }
 
 .top-bar .button {

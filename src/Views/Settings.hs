@@ -20,6 +20,6 @@ settingsView feeds = html_ $ do
         mapM_
           ( \feed -> do
               li_ [class_ "feed"] $ do
-                with a_ [onclick_ $ pack $ "deleteFeed(" ++ show (Database.Feed.id feed) ++ ")"] $ toHtml $ pack ("Delete " ++ unpack (title feed))
+                with button_ [onclick_ $ pack $ "deleteFeed(" ++ show (Database.Feed.id feed) ++ ")"] $ toHtml $ pack ("Delete " ++ unpack (title feed))
           )
           feeds
