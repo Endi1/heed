@@ -1,0 +1,87 @@
+@import "./variables.scss";
+
+body {
+  font-size: $size-3;
+  background: lighten($grey, $amount: 50);
+  font-family: $family-sans-serif;
+}
+
+.container {
+  margin-left: 5em;
+  margin-right: 9em;
+}
+
+.main {
+  display: flex;
+  margin-top: 2em;
+
+  a {
+    text-decoration: none;
+    color: darken($grey, 30);
+
+    &:hover {
+      color: darken($grey, 10);
+    }
+  }
+}
+
+.sidebar {
+  font-size: $size-4;
+
+  .feed-list {
+    width: 100%;
+
+    .feed {
+      margin-bottom: 0.2em;
+    }
+  }
+}
+
+.items {
+  margin-top: 1em;
+  margin-left: 5em;
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5em;
+
+    .item-date {
+      font-size: 0.7em;
+      color: $grey;
+    }
+
+    .item-feed {
+      font-size: 0.7em;
+      margin-left: 1em;
+    }
+
+    &.is-read {
+      a {
+        color: lighten($grey, 30);
+      }
+    }
+  }
+}
+
+ul {
+  list-style: none;
+}
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 1em;
+  a {
+    text-decoration: none;
+    color: darken($grey, 30);
+
+    &:hover {
+      color: darken($grey, 10);
+    }
+  }
+}
+
+@import "./buttons.scss";
+@import "./top_bar.scss";

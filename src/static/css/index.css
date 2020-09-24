@@ -1,6 +1,6 @@
 body {
   font-size: 1.2em;
-  background: #fbfbfb;
+  background: #fafafa;
   font-family: "Roboto", sans-serif;
 }
 
@@ -9,46 +9,14 @@ body {
   margin-right: 9em;
 }
 
-.top-bar {
-  display: flex;
-  /* flex-direction: row-reverse; */
-  justify-content: space-between;
-  height: 2.5em;
-  align-items: center;
-}
-
-.top-bar a {
-  text-decoration: none;
-}
-
-.top-bar h3 a {
-  color: black;
-}
-
-.top-bar .button {
-  background-color: #6eb4ff;
-  color: white;
-  padding: 0.5em 0.5em;
-  text-decoration: none;
-  border-radius: 0.2em;
-  margin-right: 0.5em;
-}
-
-.top-bar .button:hover {
-  background-color: #4ea3ff;
-  cursor: pointer;
-}
-
 .main {
   display: flex;
   margin-top: 2em;
 }
-
 .main a {
   text-decoration: none;
   color: #2e2e2e;
 }
-
 .main a:hover {
   color: #616161;
 }
@@ -56,12 +24,10 @@ body {
 .sidebar {
   font-size: 0.8em;
 }
-
 .sidebar .feed-list {
   width: 100%;
 }
-
-.feed {
+.sidebar .feed-list .feed {
   margin-bottom: 0.2em;
 }
 
@@ -69,25 +35,21 @@ body {
   margin-top: 1em;
   margin-left: 5em;
 }
-
-.item {
+.items .item {
   display: flex;
   flex-direction: column;
   margin-bottom: 0.5em;
 }
-
-.item .item-date {
+.items .item .item-date {
   font-size: 0.7em;
-  color: gray;
+  color: #7a7a7a;
 }
-
-.item .item-feed {
+.items .item .item-feed {
   font-size: 0.7em;
   margin-left: 1em;
 }
-
-.item.is-read a {
-  color: #b0b0b0;
+.items .item.is-read a {
+  color: #c7c7c7;
 }
 
 ul {
@@ -100,12 +62,44 @@ ul {
   justify-content: space-around;
   margin-top: 1em;
 }
-
 .pagination a {
   text-decoration: none;
   color: #2e2e2e;
 }
-
 .pagination a:hover {
   color: #616161;
 }
+
+.button {
+  padding: 0.5em 0.5em;
+  text-decoration: none;
+  border-radius: 0.2em;
+}
+.button:hover {
+  cursor: pointer;
+}
+.button.primary {
+  background-color: #3273dc;
+  color: white;
+}
+.button.primary:hover {
+  background-color: #89afeb;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  height: 2.5em;
+  align-items: center;
+}
+.top-bar a {
+  text-decoration: none;
+}
+.top-bar h3 a {
+  color: #0a0a0a;
+}
+.top-bar .button {
+  margin-right: 0.5em;
+}
+
+/*# sourceMappingURL=index.css.map */
