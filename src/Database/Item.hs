@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
 
-module Database.Item (ItemData (..), refreshFeedItems, getAllItems, markItemAsRead, getItems, dateToUTC) where
+module Database.Item (ItemData (..), refreshFeedItems, getAllItems, markItemAsRead, getItems, dateToUTC, getUnreadItems) where
 
 import Controllers.Item (readRemoteFeedItems)
 import Data.Maybe (isNothing)
@@ -88,6 +88,25 @@ getAllItems conn =
         items.description, 
         items.is_read,
         feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id WHERE items.deleted=0 ORDER BY items.date_published DESC
+|] ::
+    IO [ItemData]
+
+getUnreadItems :: Connection -> IO [ItemData]
+getUnreadItems conn =
+  query_
+    conn
+    [sql|
+      SELECT 
+        items.id, 
+        items.name, 
+        items.item_url, 
+        items.date_published, 
+        items.author, 
+        items.feed_id, 
+        items.summary, 
+        items.description, 
+        items.is_read,
+        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id WHERE items.deleted=0 AND items.is_read=0 ORDER BY items.date_published DESC
 |] ::
     IO [ItemData]
 

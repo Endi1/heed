@@ -5,7 +5,7 @@ module Actions.HomePage (homePageGetAction, refreshFeedsPostAction, deleteFeedPo
 import Actions.Types (Pagination (..))
 import Actions.Utils (paginateItems)
 import Database.Feed (FeedData (id), deleteFeed, getAllFeeds)
-import Database.Item (ItemData, getAllItems, refreshFeedItems)
+import Database.Item (ItemData, getAllItems, getUnreadItems, refreshFeedItems)
 import Database.SQLite.Simple (Connection)
 import Lucid.Base (renderText)
 import Views.ItemList (itemListGetView)
@@ -13,7 +13,8 @@ import Web.Scotty (ActionM, html, liftAndCatchIO, param, rescue)
 
 homePageGetAction :: Connection -> ActionM ()
 homePageGetAction conn = do
-  items <- liftAndCatchIO $ getAllItems conn
+  showRead <- rescue (param "show_read" :: ActionM String) (\t -> return "false")
+  items <- if showRead == "true" then liftAndCatchIO $ getAllItems conn else liftAndCatchIO $ getUnreadItems conn
   feeds <- liftAndCatchIO $ getAllFeeds conn
   page <- rescue (param "page") (\t -> return 1)
   html $
