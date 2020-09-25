@@ -10,10 +10,12 @@ import Database.Item (ItemData (..))
 import Lucid.Base (Attribute, Html, ToHtml (toHtml), With (with))
 import Lucid.Html5
 import Views.Mixins.Head (pageHead)
+import Views.Mixins.Pagination (paginationView)
 import Views.Mixins.TopBar (topBar)
 
-itemListGetView :: [FeedData] -> Pagination -> Html ()
-itemListGetView feeds pagination = html_ $ do
+-- TODO Move the ItemList to a mixin and rename this to HomePage
+itemListGetView :: [FeedData] -> Pagination -> Bool -> Html ()
+itemListGetView feeds pagination showAll = html_ $ do
   head_ $ do
     pageHead "Heed"
   body_ $ do
@@ -29,6 +31,8 @@ itemListGetView feeds pagination = html_ $ do
               )
               feeds
         div_ [class_ "items"] $ do
+          div_ [class_ "items-dashboard"] $ do
+            if showAll then a_ [href_ "?show_all=false"] "Show only unread items" else a_ [href_ "?show_all=true"] "Show all items"
           mapM_
             ( \item -> do
                 div_ [class_ "item", class_ (if is_read item then "is-read " else "")] $ do
@@ -40,12 +44,4 @@ itemListGetView feeds pagination = html_ $ do
             )
             (currentPaginationItems pagination)
       div_ [class_ "pagination"] $ do
-        case previousPaginationItems pagination of
-          [] -> span_ [class_ "previous"] ""
-          (x : xs) -> span_ [class_ "previous"] $ do
-            with a_ [href_ $ pack $ "?page=" ++ show (currentPageCount pagination - 1)] "« Previous"
-
-        case nextPaginationItems pagination of
-          [] -> span_ [class_ "next"] ""
-          (x : xs) -> span_ [class_ "next"] $ do
-            with a_ [href_ $ pack $ "?page=" ++ show (currentPageCount pagination + 1)] "Next »"
+        paginationView pagination showAll

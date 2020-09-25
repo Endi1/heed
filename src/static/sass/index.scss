@@ -62,6 +62,14 @@ body {
       }
     }
   }
+
+  .items-dashboard {
+    margin-bottom: 2em;
+
+    a {
+      font-size: $size-4;
+    }
+  }
 }
 
 ul {

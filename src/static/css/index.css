@@ -51,6 +51,12 @@ body {
 .items .item.is-read a {
   color: #c7c7c7;
 }
+.items .items-dashboard {
+  margin-bottom: 2em;
+}
+.items .items-dashboard a {
+  font-size: 0.8em;
+}
 
 ul {
   list-style: none;

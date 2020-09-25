@@ -4,6 +4,7 @@ module Actions.HomePage (homePageGetAction, refreshFeedsPostAction, deleteFeedPo
 
 import Actions.Types (Pagination (..))
 import Actions.Utils (paginateItems)
+import Data.Char (toLower)
 import Database.Feed (FeedData (id), deleteFeed, getAllFeeds)
 import Database.Item (ItemData, getAllItems, getUnreadItems, refreshFeedItems)
 import Database.SQLite.Simple (Connection)
@@ -13,8 +14,9 @@ import Web.Scotty (ActionM, html, liftAndCatchIO, param, rescue)
 
 homePageGetAction :: Connection -> ActionM ()
 homePageGetAction conn = do
-  showRead <- rescue (param "show_read" :: ActionM String) (\t -> return "false")
-  items <- if showRead == "true" then liftAndCatchIO $ getAllItems conn else liftAndCatchIO $ getUnreadItems conn
+  showAll <- rescue (param "show_all" :: ActionM String) (\t -> return "false")
+  let showAllBool = Just True == readStringBool showAll
+  items <- if showAllBool then liftAndCatchIO $ getAllItems conn else liftAndCatchIO $ getUnreadItems conn
   feeds <- liftAndCatchIO $ getAllFeeds conn
   page <- rescue (param "page") (\t -> return 1)
   html $
@@ -22,6 +24,13 @@ homePageGetAction conn = do
       itemListGetView
         feeds
         (paginateItems items page)
+        showAllBool
+
+readStringBool :: String -> Maybe Bool
+readStringBool string = case map toLower string of
+  "true" -> Just True
+  "false" -> Just False
+  _ -> Nothing
 
 refreshFeedsPostAction :: Connection -> ActionM ()
 refreshFeedsPostAction conn = do
