@@ -2,9 +2,9 @@
 
 module Views.ItemList (itemListGetView) where
 
-import Actions.Types (Pagination (..))
+import qualified Actions.Types as AT (Pagination (..))
 import Data.Maybe (fromMaybe)
-import Data.Text (pack)
+import Data.Text (Text, append, pack)
 import Database.Feed (FeedData (..))
 import Database.Item (ItemData (..))
 import Lucid.Base (Attribute, Html, ToHtml (toHtml), With (with))
@@ -13,9 +13,32 @@ import Views.Mixins.Head (pageHead)
 import Views.Mixins.Pagination (paginationView)
 import Views.Mixins.TopBar (topBar)
 
+toggleItemsButton :: Bool -> Int -> Html ()
+toggleItemsButton showingAll currentPageCount = do
+  case currentPageCount of
+    1 -> if showingAll then showUnreadButton "" else showAllButton ""
+    _ -> if showingAll then showUnreadButton (buildPageCountQuery currentPageCount) else showAllButton (buildPageCountQuery currentPageCount)
+  where
+    buildPageCountQuery :: Int -> Text
+    buildPageCountQuery pageCount = pack $ "&page=" ++ show pageCount
+
+    showUnreadButton :: Text -> Html ()
+    showUnreadButton pageCountQuery =
+      buildButton
+        "?show_all=false"
+        pageCountQuery
+        "Show only unread items"
+
+    showAllButton :: Text -> Html ()
+    showAllButton pageCountQuery = buildButton "?show_all=true" pageCountQuery "Show all items"
+
+    buildButton :: Text -> Text -> Text -> Html ()
+    buildButton query pageCountQuery description = do
+      a_ [href_ $ query `append` pageCountQuery] $ toHtml description
+
 -- TODO Move the ItemList to a mixin and rename this to HomePage
-itemListGetView :: [FeedData] -> Pagination -> Bool -> Html ()
-itemListGetView feeds pagination showAll = html_ $ do
+itemListGetView :: [FeedData] -> AT.Pagination -> Bool -> Html ()
+itemListGetView feeds pagination showingAll = html_ $ do
   head_ $ do
     pageHead "Heed"
   body_ $ do
@@ -32,7 +55,7 @@ itemListGetView feeds pagination showAll = html_ $ do
               feeds
         div_ [class_ "items"] $ do
           div_ [class_ "items-dashboard"] $ do
-            if showAll then a_ [href_ "?show_all=false"] "Show only unread items" else a_ [href_ "?show_all=true"] "Show all items"
+            toggleItemsButton showingAll (AT.currentPageCount pagination)
           mapM_
             ( \item -> do
                 div_ [class_ "item", class_ (if is_read item then "is-read " else "")] $ do
@@ -42,6 +65,6 @@ itemListGetView feeds pagination showAll = html_ $ do
                     span_ [class_ "item-feed"] $ do
                       with a_ [href_ $ pack $ "/feed/" ++ show (feed_id item)] $ toHtml $ feed_title item
             )
-            (currentPaginationItems pagination)
+            (AT.currentPaginationItems pagination)
       div_ [class_ "pagination"] $ do
-        paginationView pagination showAll
+        paginationView pagination showingAll
