@@ -13,6 +13,19 @@ import Views.Mixins.Head (pageHead)
 import Views.Mixins.Pagination (paginationView)
 import Views.Mixins.TopBar (topBar)
 
+itemList :: AT.Pagination -> Html ()
+itemList pagination = do
+  mapM_ renderItem (AT.currentPaginationItems pagination)
+  where
+    renderItem :: ItemData -> Html ()
+    renderItem item = do
+      div_ [class_ "item", class_ (if is_read item then "is-read " else "")] $ do
+        with a_ [href_ $ item_url item, target_ "blank_", onclick_ $ pack ("markAsRead(" ++ show (Database.Item.id item) ++ ")")] (toHtml $ name item)
+        div_ [class_ "item-metadata"] $ do
+          span_ [class_ "item-date"] $ toHtml $ fromMaybe "" $ date_published item
+          span_ [class_ "item-feed"] $ do
+            with a_ [href_ $ pack $ "/feed/" ++ show (feed_id item)] $ toHtml $ feed_title item
+
 toggleItemsButton :: Bool -> Int -> Html ()
 toggleItemsButton showingAll currentPageCount = do
   case currentPageCount of
@@ -24,10 +37,7 @@ toggleItemsButton showingAll currentPageCount = do
 
     showUnreadButton :: Text -> Html ()
     showUnreadButton pageCountQuery =
-      buildButton
-        "?show_all=false"
-        pageCountQuery
-        "Show only unread items"
+      buildButton "?show_all=false" pageCountQuery "Show only unread items"
 
     showAllButton :: Text -> Html ()
     showAllButton pageCountQuery = buildButton "?show_all=true" pageCountQuery "Show all items"
@@ -36,7 +46,6 @@ toggleItemsButton showingAll currentPageCount = do
     buildButton query pageCountQuery description = do
       a_ [href_ $ query `append` pageCountQuery] $ toHtml description
 
--- TODO Move the ItemList to a mixin and rename this to HomePage
 itemListGetView :: [FeedData] -> AT.Pagination -> Bool -> Html ()
 itemListGetView feeds pagination showingAll = html_ $ do
   head_ $ do
@@ -56,15 +65,6 @@ itemListGetView feeds pagination showingAll = html_ $ do
         div_ [class_ "items"] $ do
           div_ [class_ "items-dashboard"] $ do
             toggleItemsButton showingAll (AT.currentPageCount pagination)
-          mapM_
-            ( \item -> do
-                div_ [class_ "item", class_ (if is_read item then "is-read " else "")] $ do
-                  with a_ [href_ $ item_url item, target_ "blank_", onclick_ $ pack ("markAsRead(" ++ show (Database.Item.id item) ++ ")")] $ toHtml $ name item
-                  div_ [class_ "item-metadata"] $ do
-                    span_ [class_ "item-date"] $ toHtml $ fromMaybe "" $ date_published item
-                    span_ [class_ "item-feed"] $ do
-                      with a_ [href_ $ pack $ "/feed/" ++ show (feed_id item)] $ toHtml $ feed_title item
-            )
-            (AT.currentPaginationItems pagination)
+          itemList pagination
       div_ [class_ "pagination"] $ do
         paginationView pagination showingAll

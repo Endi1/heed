@@ -24,7 +24,6 @@ executable heed
                        Database.Item,
                        Actions.NewFeed,
                        Views.NewFeed,
-                       Actions.HomePage,
                        Views.ItemList
   main-is:             Main.hs
   default-language:    Haskell2010

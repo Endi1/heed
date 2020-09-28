@@ -3,10 +3,9 @@
 
 module Main where
 
-import Actions.FeedList (feedListGetAction)
-import Actions.HomePage
+import Actions.ItemList
   ( deleteFeedPostAction,
-    homePageGetAction,
+    itemListGetAction,
     refreshFeedsPostAction,
   )
 import Actions.MarkRead (markReadPostAction)
@@ -31,9 +30,9 @@ main = do
 app :: Connection -> ScottyM ()
 app conn = do
   middleware $ staticPolicy (noDots >-> addBase "/app/src/static")
-  get "/" (homePageGetAction conn)
+  get "/" (itemListGetAction conn)
   get "/new-feed" newFeedGetAction
-  get "/feed/:feed_id" $ feedListGetAction conn
+  get "/feed/:feed_id" $ itemListGetAction conn
   post "/new-feed" $ newFeedPostAction conn
   post "/mark-read" $ markReadPostAction conn
   post "/refresh-feeds" $ refreshFeedsPostAction conn

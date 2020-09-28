@@ -49,12 +49,18 @@ type InsertableItem = (Maybe Text, Maybe Text, Maybe Text, Maybe Text, Integer, 
 instance FromRow ItemData where
   fromRow = ItemData <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
 
-getItems :: Connection -> Maybe Integer -> IO [ItemData]
-getItems conn Nothing = getAllItems conn
-getItems conn (Just f_id) = getItemsForFeed conn f_id
+type ShowAll = Bool
+
+type FeedID = Integer
+
+getItems :: Connection -> Maybe FeedID -> ShowAll -> IO [ItemData]
+getItems conn Nothing True = getAllItems conn
+getItems conn Nothing False = getUnreadItems conn
+getItems conn (Just feedID) False = getUnreadItemsForFeed conn feedID
+getItems conn (Just feedID) True = getItemsForFeed conn feedID
 
 getItemsForFeed :: Connection -> Integer -> IO [ItemData]
-getItemsForFeed conn f_id =
+getItemsForFeed conn feedID =
   query
     conn
     [sql|
@@ -70,7 +76,26 @@ getItemsForFeed conn f_id =
         items.is_read,
         feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id WHERE items.feed_id=? AND items.deleted=0 ORDER BY items.date_published DESC
 |]
-    (Only f_id)
+    (Only feedID)
+
+getUnreadItemsForFeed :: Connection -> Integer -> IO [ItemData]
+getUnreadItemsForFeed conn feedID =
+  query
+    conn
+    [sql|
+      SELECT 
+        items.id, 
+        items.name, 
+        items.item_url, 
+        items.date_published, 
+        items.author, 
+        items.feed_id, 
+        items.summary, 
+        items.description, 
+        items.is_read,
+        feeds.title FROM items INNER JOIN feeds ON items.feed_id=feeds.id WHERE items.feed_id=? AND items.deleted=0 AND items.is_read=0 ORDER BY items.date_published DESC
+|]
+    (Only feedID)
 
 getAllItems :: Connection -> IO [ItemData]
 getAllItems conn =
