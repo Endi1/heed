@@ -1,12 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Actions.MarkRead (markReadPostAction) where
+module Actions.MarkRead
+  ( markReadPostAction
+  )
+where
 
-import Database.Item (markItemAsRead)
-import Database.SQLite.Simple (Connection)
-import Lucid.Base (renderText)
-import Web.Scotty (ActionM, html, liftAndCatchIO, param)
+import           Database.Item                  ( markItemAsRead )
+import           Database.SQLite.Simple         ( Connection )
+import           Web.Scotty                     ( ActionM
+                                                , html
+                                                , liftAndCatchIO
+                                                , param
+                                                )
 
 markReadPostAction :: Connection -> ActionM ()
 markReadPostAction conn = do

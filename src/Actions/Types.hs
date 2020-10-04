@@ -1,6 +1,9 @@
-module Actions.Types (Pagination (..)) where
+module Actions.Types
+  ( Pagination(..)
+  )
+where
 
-import Database.Item (ItemData)
+import           Database.Item                  ( ItemData )
 
 data Pagination = Pagination
   { previousPaginationItems :: [ItemData],

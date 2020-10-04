@@ -1,10 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Views.NewFeed (newFeedView) where
+module Views.NewFeed
+  ( newFeedView
+  )
+where
 
-import Lucid.Base
-import Lucid.Html5
-import Views.Mixins.Head (pageHead)
+import           Lucid.Base
+import           Lucid.Html5
+import           Views.Mixins.Head              ( pageHead )
 
 newFeedView :: Html ()
 newFeedView = html_ $ do

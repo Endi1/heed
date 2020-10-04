@@ -1,26 +1,26 @@
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Database.Feed (FeedData (..), insertNewFeed, getAllFeeds, getFeed, deleteFeed) where
-
-import Controllers.RequestHelpers (buildUrl, makeRequestToFeed)
-import Data.ByteString (ByteString)
-import Data.ByteString.Lazy (fromStrict)
-import Data.Foldable (forM_)
-import Data.Int (Int64)
-import Data.Text (Text)
-import Database.SQLite.Simple
-  ( Connection,
-    FromRow (..),
-    Only (..),
-    execute,
-    field,
-    lastInsertRowId,
-    query,
-    query_,
+module Database.Feed
+  ( FeedData(..)
+  , insertNewFeed
+  , getAllFeeds
+  , getFeed
+  , deleteFeed
   )
-import Text.Feed.Import (parseFeedSource)
-import Text.Feed.Query (getFeedTitle)
+where
+
+import           Data.Int                       ( Int64 )
+import           Data.Text                      ( Text )
+import           Database.SQLite.Simple         ( Connection
+                                                , FromRow(..)
+                                                , Only(..)
+                                                , execute
+                                                , field
+                                                , lastInsertRowId
+                                                , query
+                                                , query_
+                                                )
 
 data FeedData = FeedData {id :: Integer, title :: Text, feed_url :: Text} deriving (Show)
 
@@ -29,16 +29,20 @@ instance FromRow FeedData where
 
 deleteFeed :: Connection -> Integer -> IO ()
 deleteFeed conn feedId = do
-  execute conn "DELETE FROM feeds WHERE id=?" (Only feedId)
+  execute conn "DELETE FROM feeds WHERE id=?"      (Only feedId)
   execute conn "DELETE FROM items WHERE feed_id=?" (Only feedId)
 
 insertNewFeed :: Connection -> Text -> Text -> IO Int64
 insertNewFeed conn title url = do
-  execute conn "INSERT OR IGNORE INTO feeds (title, feed_url) VALUES (?, ?)" (title, url)
+  execute conn
+          "INSERT OR IGNORE INTO feeds (title, feed_url) VALUES (?, ?)"
+          (title, url)
   rowId <- lastInsertRowId conn
   case rowId of
     0 -> do
-      (x : xs) <- query conn "SELECT id FROM feeds WHERE feed_url = ?" (Only url) :: IO [Only Int64]
+      (x : xs) <-
+        query conn "SELECT id FROM feeds WHERE feed_url = ?" (Only url) :: IO
+          [Only Int64]
       return $ fromOnly x
     _ -> return rowId
 
