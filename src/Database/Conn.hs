@@ -3,7 +3,9 @@ module Database.Conn
   )
 where
 
-import           Database.SQLite.Simple
+import           Database.SQLite.Simple         ( open
+                                                , Connection
+                                                )
 import           Settings                       ( dburi )
 
 getConn :: IO Connection

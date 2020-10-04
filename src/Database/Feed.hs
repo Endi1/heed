@@ -40,6 +40,7 @@ insertNewFeed conn title url = do
   rowId <- lastInsertRowId conn
   case rowId of
     0 -> do
+
       (x : _) <-
         query conn "SELECT id FROM feeds WHERE feed_url = ?" (Only url) :: IO
           [Only Int64]

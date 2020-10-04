@@ -4,11 +4,8 @@
 module Database.Item
   ( ItemData(..)
   , refreshFeedItems
-  , getAllItems
   , markItemAsRead
   , getItems
-  , dateToUTC
-  , getUnreadItems
   )
 where
 
