@@ -26,20 +26,39 @@ itemList pagination = do
  where
   renderItem :: ItemData -> Html ()
   renderItem item = do
-    div_ [class_ "item", class_ (if is_read item then "is-read " else "")] $ do
-      with
-        a_
-        [ href_ $ item_url item
-        , target_ "blank_"
-        , onclick_ $ pack ("markAsRead(" ++ show (Database.Item.id item) ++ ")")
+    div_
+        [ class_ "item"
+        , class_ (if is_read item then "is-read " else "")
+        , id_ $ pack $ "item-" ++ show (Database.Item.id item)
         ]
-        (toHtml $ name item)
-      div_ [class_ "item-metadata"] $ do
-        span_ [class_ "item-date"] $ toHtml $ fromMaybe "" $ date_published item
-        span_ [class_ "item-feed"] $ do
-          with a_ [href_ $ pack $ "/feed/" ++ show (feed_id item)]
-            $ toHtml
-            $ feed_title item
+      $ do
+          with
+            a_
+            [ href_ $ item_url item
+            , target_ "blank_"
+            , onclick_
+              $ pack ("markAsRead(" ++ show (Database.Item.id item) ++ ")")
+            ]
+            (toHtml $ name item)
+          div_ [class_ "item-metadata"] $ do
+            span_ [class_ "item-date"] $ toHtml $ fromMaybe "" $ date_published
+              item
+            span_ [class_ "item-feed"] $ do
+              with a_ [href_ $ pack $ "/feed/" ++ show (feed_id item)]
+                $ toHtml
+                $ feed_title item
+            span_ [class_ "item-mark-as-read"] $ do
+              with
+                a_
+                [ onclick_ $ pack
+                    (  "markAsRead("
+                    ++ show (Database.Item.id item)
+                    ++ "); updateItemClassToRead("
+                    ++ show (Database.Item.id item)
+                    ++ ")"
+                    )
+                ]
+                "mark as read"
 
 toggleItemsButton :: Bool -> Int -> Html ()
 toggleItemsButton showingAll currentPageCount = do

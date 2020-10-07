@@ -51,9 +51,12 @@ body {
       color: $grey;
     }
 
-    .item-feed {
-      font-size: 0.7em;
-      margin-left: 1em;
+    .item-metadata {
+      a {
+        font-size: 0.7em;
+        margin-left: 1em;
+        cursor: pointer;
+      }
     }
 
     &.is-read {
