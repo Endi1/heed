@@ -31,3 +31,8 @@ let deleteFeed = (feedId) => {
   xhr.open("POST", `http://${domain}:${port}/delete-feed`, true);
   xhr.send(formData);
 };
+
+let updateItemClassToRead = (itemId) => {
+  const itemDiv = document.getElementById(`item-${itemId}`);
+  itemDiv.classList.add("is-read");
+};
