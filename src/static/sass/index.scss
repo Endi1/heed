@@ -25,6 +25,26 @@ body {
   }
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+  .button {
+    max-width: 9em;
+  }
+
+  input {
+    margin: 0.5em;
+
+    &[type="text"] {
+      font-size: 1.2em;
+    }
+  }
+}
+
+.center {
+  justify-content: center;
+}
+
 .sidebar {
   font-size: $size-4;
 

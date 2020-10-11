@@ -21,6 +21,24 @@ body {
   color: #616161;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+}
+form .button {
+  max-width: 9em;
+}
+form input {
+  margin: 0.5em;
+}
+form input[type=text] {
+  font-size: 1.2em;
+}
+
+.center {
+  justify-content: center;
+}
+
 .sidebar {
   font-size: 0.8em;
 }
@@ -81,6 +99,7 @@ ul {
   padding: 0.5em 0.5em;
   text-decoration: none;
   border-radius: 0.2em;
+  border: none;
 }
 .button:hover {
   cursor: pointer;
