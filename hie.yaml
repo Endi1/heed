@@ -1,0 +1,34 @@
+cradle:
+  stack:
+    - path: "./src/Main.hs"
+      component: "heed:exe:heed"
+
+    - path: "./src/Settings.hs"
+      component: "heed:exe:heed"
+
+    - path: "./src/Database.Conn.hs"
+      component: "heed:exe:heed"
+
+    - path: "./src/Controllers.Feed.hs"
+      component: "heed:exe:heed"
+
+    - path: "./src/Controllers.Item.hs"
+      component: "heed:exe:heed"
+
+    - path: "./src/Controllers.RequestHelpers.hs"
+      component: "heed:exe:heed"
+
+    - path: "./src/Database.Feed.hs"
+      component: "heed:exe:heed"
+
+    - path: "./src/Database.Item.hs"
+      component: "heed:exe:heed"
+
+    - path: "./src/Actions.NewFeed.hs"
+      component: "heed:exe:heed"
+
+    - path: "./src/Views.NewFeed.hs"
+      component: "heed:exe:heed"
+
+    - path: "./src/Views.ItemList.hs"
+      component: "heed:exe:heed"
