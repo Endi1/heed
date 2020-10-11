@@ -21,18 +21,22 @@ settingsView feeds = html_ $ do
   body_ $ do
     div_ [class_ "container"] $ do
       topBar
-      ul_ [class_ "feed-list"] $ do
-        mapM_
-          (\feed -> do
-            li_ [class_ "feed"] $ do
-              with
-                  button_
-                  [ onclick_
-                    $  pack
-                    $  "deleteFeed("
-                    ++ show (Database.Feed.id feed)
-                    ++ ")"
-                  ]
-                $ toHtml ("Delete " `append` title feed)
-          )
-          feeds
+      div_ [class_ "main center"] $ do
+        div_ [class_ "settings-container center"] $ do
+          h3_ "Manage Feeds"
+          ul_ [class_ "feed-list"] $ do
+            mapM_
+              (\feed -> do
+                li_ [class_ "feed"] $ do
+                  with
+                      button_
+                      [ class_ "button danger"
+                      , onclick_
+                      $  pack
+                      $  "deleteFeed("
+                      ++ show (Database.Feed.id feed)
+                      ++ ")"
+                      ]
+                    $ toHtml ("Delete " `append` title feed)
+              )
+              feeds
