@@ -39,6 +39,10 @@ form input[type=text] {
   justify-content: center;
 }
 
+.column {
+  flex-direction: column;
+}
+
 .sidebar {
   font-size: 0.8em;
 }
@@ -110,6 +114,13 @@ ul {
 }
 .button.primary:hover {
   background-color: #89afeb;
+}
+.button.danger {
+  background-color: #f14668;
+  color: white;
+}
+.button.danger:hover {
+  background-color: #f8a5b6;
 }
 
 .top-bar {

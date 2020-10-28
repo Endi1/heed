@@ -22,6 +22,7 @@ executable heed
                        Controllers.RequestHelpers,
                        Database.Feed,
                        Database.Item,
+                       Database.AppSettings
                        Actions.NewFeed,
                        Views.NewFeed,
                        Views.ItemList

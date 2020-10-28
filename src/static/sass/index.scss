@@ -45,6 +45,10 @@ form {
   justify-content: center;
 }
 
+.column {
+  flex-direction: column;
+}
+
 .sidebar {
   font-size: $size-4;
 

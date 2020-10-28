@@ -16,4 +16,13 @@
       background-color: lighten($primary, 20);
     }
   }
+
+  &.danger {
+    background-color: $red;
+    color: white;
+
+    &:hover {
+      background-color: lighten($color: $red, $amount: 20);
+    }
+  }
 }
