@@ -24,6 +24,9 @@ cradle:
     - path: "./src/Database.Item.hs"
       component: "heed:exe:heed"
 
+    - path: "./src/Database.AppSettings.hs"
+      component: "heed:exe:heed"
+
     - path: "./src/Actions.NewFeed.hs"
       component: "heed:exe:heed"
 

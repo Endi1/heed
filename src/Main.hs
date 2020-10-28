@@ -11,7 +11,9 @@ import           Actions.MarkRead               ( markReadPostAction )
 import           Actions.NewFeed                ( newFeedGetAction
                                                 , newFeedPostAction
                                                 )
-import           Actions.Settings               ( settingsGetAction )
+import           Actions.Settings               ( settingsGetAction
+                                                , settingsPostAction
+                                                )
 import           Database.Conn                  ( getConn )
 import           Database.SQLite.Simple         ( Connection )
 import           Network.Wai.Middleware.Static  ( addBase
@@ -42,3 +44,4 @@ app conn = do
   post "/refresh-feeds" $ refreshFeedsPostAction conn
   post "/delete-feed" $ deleteFeedPostAction conn
   get "/settings" $ settingsGetAction conn
+  post "/settings" $ settingsPostAction conn
