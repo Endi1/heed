@@ -30,6 +30,9 @@ let deleteFeed = (feedId) => {
 
   xhr.open("POST", `http://${domain}:${port}/delete-feed`, true);
   xhr.send(formData);
+  xhr.onload = () => {
+    window.location = "/"
+  }
 };
 
 let updateItemClassToRead = (itemId) => {
