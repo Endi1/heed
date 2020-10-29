@@ -20,6 +20,7 @@ import           Views.Mixins.Head              ( pageHead )
 import           Views.Mixins.Pagination        ( paginationView )
 import           Views.Mixins.TopBar            ( topBar )
 
+-- TODO use printf to format the functions better
 itemList :: AT.Pagination -> Html ()
 itemList pagination = do
   mapM_ renderItem (AT.currentPaginationItems pagination)
@@ -36,8 +37,13 @@ itemList pagination = do
             a_
             [ href_ $ item_url item
             , target_ "blank_"
-            , onclick_
-              $ pack ("markAsRead(" ++ show (Database.Item.id item) ++ ")")
+            , onclick_ $ pack
+              (  "markAsRead("
+              ++ show (Database.Item.id item)
+              ++ "); updateItemClassToRead("
+              ++ show (Database.Item.id item)
+              ++ ")"
+              )
             ]
             (toHtml $ name item)
           div_ [class_ "item-metadata"] $ do
