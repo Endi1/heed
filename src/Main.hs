@@ -27,7 +27,6 @@ import           Web.Scotty                     ( ScottyM
                                                 , post
                                                 , scotty
                                                 )
-import           Database.AppSettings
 
 main :: IO ()
 main = do
