@@ -99,6 +99,10 @@ ul {
   color: #616161;
 }
 
+.settings-container .feed-list .feed {
+  margin-bottom: 1em;
+}
+
 .button {
   padding: 0.5em 0.5em;
   text-decoration: none;

@@ -118,5 +118,13 @@ ul {
   }
 }
 
+.settings-container {
+  .feed-list {
+    .feed {
+      margin-bottom: 1em;
+    }
+  }
+}
+
 @import "./buttons.scss";
 @import "./top_bar.scss";
