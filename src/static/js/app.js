@@ -17,6 +17,7 @@ let refreshFeeds = () => {
 
   xhr.open("POST", `http://${domain}:${port}/refresh-feeds`, true);
   xhr.send();
+  notie.alert({type: 'info', text: 'Refreshing feeds...'});
   xhr.onload = () => {
     window.location.reload();
   };
