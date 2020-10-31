@@ -23,18 +23,27 @@ let refreshFeeds = () => {
   };
 };
 
-let deleteFeed = (feedId) => {
-  let xhr = new XMLHttpRequest();
-  const domain = window.location.hostname;
-  const port = location.port;
-  let formData = new FormData();
-  formData.append("feed_id", feedId);
+let deleteFeed = (feedId, feedTitle) => {
 
-  xhr.open("POST", `http://${domain}:${port}/delete-feed`, true);
-  xhr.send(formData);
-  xhr.onload = () => {
-    window.location = "/"
-  }
+  notie.confirm({
+    text: `Are you sure you want to <b>delete</b> ${feedTitle}?!`,
+    cancelCallback: function () {
+      return;
+    },
+    submitCallback: function () {
+      let xhr = new XMLHttpRequest();
+      const domain = window.location.hostname;
+      const port = location.port;
+      let formData = new FormData();
+      formData.append("feed_id", feedId);
+
+      xhr.open("POST", `http://${domain}:${port}/delete-feed`, true);
+      xhr.send(formData);
+      xhr.onload = () => {
+        window.location = "/";
+      }
+      }
+    })
 };
 
 let updateItemClassToRead = (itemId) => {

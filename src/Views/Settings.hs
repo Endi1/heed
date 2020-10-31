@@ -43,6 +43,8 @@ feedManagement feeds = ul_ [class_ "feed-list"] $ do
             $  pack
             $  "deleteFeed("
             ++ show (Database.Feed.id feed)
+            ++ ", "
+            ++ show (Database.Feed.title feed)
             ++ ")"
             ]
           $ toHtml ("Delete " `append` title feed)
