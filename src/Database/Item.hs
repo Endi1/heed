@@ -173,7 +173,7 @@ refreshFeedItems conn feedId = do
     (Prelude.map ((\a -> a feedId) . tuplefyItem) items)
   execute
     conn
-    "DELETE FROM TABLE items WHERE is_read=1 AND date_published < (SELECT DATETIME('now', '-30 day')) AND feed_id=?"
+    "DELETE FROM items WHERE is_read=1 AND date_published < (SELECT DATETIME('now', '-30 day')) AND feed_id=?"
     [feedId]
  where
   tuplefyItem :: Item -> Integer -> InsertableItem
