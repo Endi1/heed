@@ -165,12 +165,16 @@ getUnreadItems conn =
 
 refreshFeedItems :: Connection -> Integer -> IO ()
 refreshFeedItems conn feedId = do
-  (feed : feeds) <- getFeed conn feedId
-  items          <- readRemoteFeedItems $ feed_url feed
+  (feed : _) <- getFeed conn feedId
+  items      <- readRemoteFeedItems $ feed_url feed
   executeMany
     conn
     "INSERT OR IGNORE INTO items (name, item_url, date_published, author, feed_id, summary, description, is_read, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0)"
     (Prelude.map ((\a -> a feedId) . tuplefyItem) items)
+  execute
+    conn
+    "DELETE FROM TABLE items WHERE is_read=1 AND date_published < (SELECT DATETIME('now', '-30 day')) AND feed_id=?"
+    [feedId]
  where
   tuplefyItem :: Item -> Integer -> InsertableItem
   tuplefyItem item feedId =
