@@ -4,6 +4,7 @@
 module Actions.NewFeed
   ( newFeedPostAction
   , newFeedGetAction
+  , importFeedFromUrl
   )
 where
 
@@ -22,17 +23,25 @@ import           Web.Scotty                     ( ActionM
                                                 , raise
                                                 , redirect
                                                 )
+import           Data.Int                       ( Int64 )
 
 newFeedGetAction :: ActionM ()
 newFeedGetAction = html $ renderText newFeedView
 
 newFeedPostAction :: Connection -> ActionM ()
 newFeedPostAction conn = do
-  feed_url :: Text <- param "feed_url"
-  maybeFeed        <- liftAndCatchIO $ readRemoteFeed feed_url
+  feedUrl :: Text  <- param "feed_url"
+  feedImportResult <- liftAndCatchIO $ importFeedFromUrl conn feedUrl
+  case feedImportResult of
+    Nothing -> raise "Not a valid atom/rss feed"
+    Just _  -> redirect "/"
+
+importFeedFromUrl :: Connection -> Text -> IO (Maybe Int64)
+importFeedFromUrl conn url = do
+  maybeFeed <- readRemoteFeed url
   case maybeFeed of
-    Nothing   -> raise "Not a valid atom/rss feed"
+    Nothing   -> return Nothing
     Just feed -> do
-      feedId <- liftAndCatchIO $ insertNewFeed conn (getFeedTitle feed) feed_url
-      liftAndCatchIO $ refreshFeedItems conn $ toInteger feedId
-      redirect "/"
+      feedId <- insertNewFeed conn (getFeedTitle feed) url
+      refreshFeedItems conn $ toInteger feedId
+      return $ Just feedId

@@ -18,6 +18,14 @@ import           Views.Mixins.TopBar            ( topBar )
 unchecked_ :: Attribute
 unchecked_ = makeAttribute "unchecked" mempty
 
+importFeedList :: Html ()
+importFeedList = div_ [class_ "import-feedlist"] $ do
+  form_ [action_ "/import-feedlist", method_ "post"] $ do
+    textarea_
+      [name_ "feedlist", placeholder_ "List of feeds separated by newline"]
+      ""
+    input_ [class_ "button primary", type_ "submit", value_ "Import"]
+
 generalSettings :: AppSettings -> Html ()
 generalSettings appSettings = div_ [class_ "general-settings"] $ do
   form_ [action_ "/settings", method_ "post"] $ do
@@ -64,3 +72,5 @@ settingsView appSettings feeds = html_ $ do
           feedManagement feeds
           h3_ "General settings"
           generalSettings appSettings
+          h3_ "Import feed list"
+          importFeedList

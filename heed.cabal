@@ -24,6 +24,7 @@ executable heed
                        Database.Item,
                        Database.AppSettings
                        Actions.NewFeed,
+                       Actions.ImportFeedList,
                        Views.NewFeed,
                        Views.ItemList
   main-is:             Main.hs

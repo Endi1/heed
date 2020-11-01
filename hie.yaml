@@ -30,6 +30,9 @@ cradle:
     - path: "./src/Actions.NewFeed.hs"
       component: "heed:exe:heed"
 
+    - path: "./src/Actions.ImportFeedList.hs"
+      component: "heed:exe:heed"
+
     - path: "./src/Views.NewFeed.hs"
       component: "heed:exe:heed"
 

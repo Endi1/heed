@@ -7,6 +7,7 @@ import           Actions.ItemList               ( deleteFeedPostAction
                                                 , itemListGetAction
                                                 , refreshFeedsPostAction
                                                 )
+import           Actions.ImportFeedList         ( importFeedListPostAction )
 import           Actions.MarkRead               ( markReadPostAction )
 import           Actions.NewFeed                ( newFeedGetAction
                                                 , newFeedPostAction
@@ -45,3 +46,4 @@ app conn = do
   post "/delete-feed" $ deleteFeedPostAction conn
   get "/settings" $ settingsGetAction conn
   post "/settings" $ settingsPostAction conn
+  post "/import-feedlist" $ importFeedListPostAction conn
