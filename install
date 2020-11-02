@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker stop heed; docker rm heed; docker build -t heed .; docker run -d --restart unless-stopped -v ~/docker/heed/db:/db --env-file=.env.dev --publish 8000:8080 --name heed heed
+docker stop heed; docker rm heed; docker build -t heed .; docker run -d --restart unless-stopped -v ~/docker/heed/db:/db --env-file=.env.dev --publish 8000:8000 --name heed heed

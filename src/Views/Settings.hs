@@ -18,6 +18,10 @@ import           Views.Mixins.TopBar            ( topBar )
 unchecked_ :: Attribute
 unchecked_ = makeAttribute "unchecked" mempty
 
+exportFeedList :: Html ()
+exportFeedList = div_ [class_ "export-feedlist"]
+  $ a_ [class_ "button primary", href_ "/export-feedlist"] "Export"
+
 importFeedList :: Html ()
 importFeedList = div_ [class_ "import-feedlist"] $ do
   form_ [action_ "/import-feedlist", method_ "post"] $ do
@@ -74,3 +78,5 @@ settingsView appSettings feeds = html_ $ do
           generalSettings appSettings
           h3_ "Import feed list"
           importFeedList
+          h3_ "Export feed list to text file"
+          exportFeedList

@@ -7,6 +7,7 @@ import           Actions.ItemList               ( deleteFeedPostAction
                                                 , itemListGetAction
                                                 , refreshFeedsPostAction
                                                 )
+import           Actions.ExportFeedList         ( exportFeedListGetAction )
 import           Actions.ImportFeedList         ( importFeedListPostAction )
 import           Actions.MarkRead               ( markReadPostAction )
 import           Actions.NewFeed                ( newFeedGetAction
@@ -28,15 +29,18 @@ import           Web.Scotty                     ( ScottyM
                                                 , post
                                                 , scotty
                                                 )
+import           Settings
+import           GHC.IO
 
 main :: IO ()
 main = do
   conn <- getConn
-  scotty 8080 (app conn)
+  scotty 8000 (app conn)
 
 app :: Connection -> ScottyM ()
 app conn = do
-  middleware $ staticPolicy (noDots >-> addBase "/app/src/static")
+  middleware
+    $ staticPolicy (noDots >-> addBase (unsafePerformIO staticlocation))
   get "/"         (itemListGetAction conn)
   get "/new-feed" newFeedGetAction
   get "/feed/:feed_id" $ itemListGetAction conn
@@ -47,3 +51,4 @@ app conn = do
   get "/settings" $ settingsGetAction conn
   post "/settings" $ settingsPostAction conn
   post "/import-feedlist" $ importFeedListPostAction conn
+  get "/export-feedlist" $ exportFeedListGetAction conn
