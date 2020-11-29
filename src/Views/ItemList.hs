@@ -36,7 +36,7 @@ itemList pagination = do
           with
             a_
             [ href_ $ item_url item
-            , target_ "blank_"
+            , target_ "_blank"
             , onclick_ $ pack
               (  "markAsRead("
               ++ show (Database.Item.id item)
