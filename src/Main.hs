@@ -31,10 +31,12 @@ import           Web.Scotty                     ( ScottyM
                                                 )
 import           Settings
 import           GHC.IO
+import           Database.Init
 
 main :: IO ()
 main = do
   conn <- getConn
+  initTables conn
   scotty 8000 (app conn)
 
 app :: Connection -> ScottyM ()
